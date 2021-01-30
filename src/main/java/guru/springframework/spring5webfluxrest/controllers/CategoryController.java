@@ -11,8 +11,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/v1/categories")
+@RequestMapping(CategoryController.CATEGORY_BASE_URL)
 public class CategoryController {
+
+    public static final String CATEGORY_BASE_URL = "/api/v1/categories";
 
     private final CategoryRepository categoryRepository;
 
