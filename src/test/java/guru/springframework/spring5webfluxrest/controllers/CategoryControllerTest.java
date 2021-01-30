@@ -6,11 +6,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.reactivestreams.Publisher;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static guru.springframework.spring5webfluxrest.controllers.CategoryController.CATEGORY_BASE_URL;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.anyString;
 import static org.mockito.BDDMockito.given;
 
@@ -48,5 +50,42 @@ public class CategoryControllerTest {
                 .uri(CATEGORY_BASE_URL + "/123")
                 .exchange()
                 .expectBody(Category.class);
+    }
+
+    @Test
+    public void createCategory() {
+
+        given(categoryRepository.saveAll(any(Publisher.class))).willReturn(Flux.just(new Category()));
+
+        Mono<Category> categoryMono = Mono.just(new Category());
+
+        webTestClient
+                .post()
+                .uri(CATEGORY_BASE_URL)
+                .body(categoryMono, Category.class)
+                .exchange()
+                .expectStatus()
+                .isCreated();
+    }
+
+    @Test
+    public void updateCategory() {
+
+        given(categoryRepository.save(any(Category.class))).willReturn(Mono.just(new Category()));
+
+        Mono<Category> categoryMono = Mono.just(new Category());
+
+        webTestClient
+                .put()
+                .uri(CATEGORY_BASE_URL + "/123")
+                .body(categoryMono, Category.class)
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+
+
+
+
     }
 }
